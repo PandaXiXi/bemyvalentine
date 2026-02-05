@@ -12,79 +12,69 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', cursive, sans-serif;
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            overflow: hidden; /* Empêche le scroll si un bouton dépasse */
         }
 
         .card {
             background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(214, 51, 132, 0.2);
+            padding: 30px;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.2);
             text-align: center;
             z-index: 10;
-            min-width: 320px;
+            width: 90%;
+            max-width: 400px;
         }
 
-        h1 {
-            color: #d63384;
-            margin-bottom: 50px;
-            font-size: 1.8rem;
-        }
+        h1 { color: #d63384; font-size: 1.5rem; margin-bottom: 30px; }
 
         .buttons-container {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 20px;
-            height: 100px;
+            height: 150px; /* Zone pour bouger */
             position: relative;
         }
 
         button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
+            padding: 12px 25px;
+            font-size: 1.1rem;
             font-weight: bold;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: all 0.15s ease-out; /* Plus réactif */
-            position: relative;
+            position: absolute; /* On les met en absolute direct pour le JS */
+            transition: all 0.2s ease;
         }
 
-        #yes-btn {
-            background-color: #ff4d6d;
-            color: white;
-            z-index: 101;
+        #yes-btn { 
+            background-color: #ff4d6d; color: white; 
+            left: 20%; /* Position initiale */
         }
 
-        #no-btn {
-            background-color: #adb5bd;
-            color: white;
-            z-index: 100;
+        #no-btn { 
+            background-color: #adb5bd; color: white;
+            right: 20%; /* Position initiale */
         }
 
         .heart {
-            position: absolute;
-            color: #ffb3c1;
-            font-size: 20px;
-            pointer-events: none;
+            position: absolute; color: #ffb3c1; pointer-events: none;
             animation: floatUp 4s linear forwards;
         }
 
         @keyframes floatUp {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+            0% { transform: translateY(100vh); opacity: 1; }
+            100% { transform: translateY(-10vh); opacity: 0; }
         }
-
-        img { border-radius: 15px; margin-top: 15px; }
     </style>
 </head>
 <body>
 
     <div class="card" id="main-card">
         <h1>Veux-tu être ma Valentine ? ❤️</h1>
-        <div class="buttons-container">
+        <div class="buttons-container" id="area">
             <button id="yes-btn" onclick="celebrate()">OUI !</button>
             <button id="no-btn">Non</button>
         </div>
@@ -94,56 +84,42 @@
         const noBtn = document.getElementById('no-btn');
         const yesBtn = document.getElementById('yes-btn');
 
-        function moveElement(el) {
-            el.style.position = 'absolute';
-            const maxX = window.innerWidth - el.offsetWidth - 50;
-            const maxY = window.innerHeight - el.offsetHeight - 50;
+        function moveElement(el, isEasy) {
+            // Calcul des limites de l'écran pour éviter que ça sorte
+            const padding = 20;
+            const maxX = window.innerWidth - el.offsetWidth - padding;
+            const maxY = window.innerHeight - el.offsetHeight - padding;
             
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            // On s'assure que les coordonnées sont au moins égales à 'padding'
+            const randomX = Math.max(padding, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(padding, Math.floor(Math.random() * maxY));
             
             el.style.left = randomX + 'px';
             el.style.top = randomY + 'px';
         }
 
-        // Le bouton NON fuit sauvagement au survol
+        // Le bouton NON : fuit systématiquement
         noBtn.addEventListener('mouseover', () => moveElement(noBtn));
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveElement(noBtn); });
 
-        // Le bouton OUI bouge aussi, pour rendre le truc frustrant et drôle !
+        // Le bouton OUI : bouge seulement 50% du temps pour rester "cliquable"
         yesBtn.addEventListener('mouseover', () => {
-            // On lui donne une chance sur deux de bouger pour qu'il soit cliquable quand même
-            if(Math.random() > 0.3) { 
+            if(Math.random() > 0.5) {
                 moveElement(yesBtn);
             }
         });
 
         function celebrate() {
-            const card = document.getElementById('main-card');
-            // On remet le bouton Oui en position normale pour le message de fin
-            yesBtn.style.position = 'relative';
-            yesBtn.style.left = '0';
-            yesBtn.style.top = '0';
-
-            card.innerHTML = `
-                <h1 style="font-size: 2.5rem;">Enfin attrapé ! 🥰</h1>
-                <p style="color: #ff4d6d; font-size: 1.2rem; font-weight: bold;">Tu as dû te battre, mais ça en valait la peine ! ❤️</p>
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW1uNHFqZ3J3ZzR3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3JpZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" width="250">
+            document.getElementById('main-card').innerHTML = `
+                <h1 style="font-size: 2rem;">Yééé ! 🥰</h1>
+                <p style="color: #ff4d6d; font-weight: bold;">C'était écrit ! ❤️</p>
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW1uNHFqZ3J3ZzR3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3JpZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" width="200" style="border-radius:15px">
             `;
-            setInterval(createHeart, 150);
+            setInterval(createHeart, 200);
         }
 
         function createHeart() {
             const heart = document.createElement('div');
             heart.classList.add('heart');
             heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4000);
-        }
-
-        for(let i=0; i<15; i++) { setTimeout(createHeart, i * 300); }
-    </script>
-</body>
-</html>
+            heart.style.left = Math
