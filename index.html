@@ -13,7 +13,7 @@
             height: 100vh;
             margin: 0;
             font-family: 'Arial', sans-serif;
-            overflow: hidden; /* Interdit le défilement */
+            overflow: hidden;
         }
 
         .card {
@@ -24,6 +24,7 @@
             text-align: center;
             z-index: 10;
             width: 320px;
+            position: relative;
         }
 
         h1 { color: #d63384; margin-bottom: 20px; font-size: 1.5rem; }
@@ -43,7 +44,6 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            /* Transition rapide pour le fun */
             transition: transform 0.1s ease;
         }
 
@@ -60,7 +60,13 @@
             100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        img { width: 100%; border-radius: 15px; margin-top: 15px; }
+        /* Style pour l'image de victoire */
+        .victory-gif {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
@@ -78,39 +84,34 @@
         const yesBtn = document.getElementById('yes-btn');
 
         function teleport(btn) {
-            // On s'assure que le bouton reste dans la partie centrale de l'écran
-            // On prend 80% de la largeur/hauteur pour éviter les bords
-            const safeWidth = window.innerWidth * 0.8;
-            const safeHeight = window.innerHeight * 0.8;
+            // Zone de sécurité : reste entre 10% et 70% de l'écran
+            const safeWidth = window.innerWidth * 0.6;
+            const safeHeight = window.innerHeight * 0.6;
             
-            // Calcul d'une position aléatoire dans cette zone centrale
-            const randomX = Math.random() * (safeWidth - btn.offsetWidth) + (window.innerWidth * 0.1);
-            const randomY = Math.random() * (safeHeight - btn.offsetHeight) + (window.innerHeight * 0.1);
+            const randomX = Math.random() * safeWidth + (window.innerWidth * 0.2);
+            const randomY = Math.random() * safeHeight + (window.innerHeight * 0.2);
 
             btn.style.position = 'fixed';
             btn.style.left = randomX + 'px';
             btn.style.top = randomY + 'px';
-            btn.style.margin = '0'; // Supprime les décalages de centrage
+            btn.style.margin = '0';
         }
 
-        // Le "Non" bouge dès qu'on s'approche
         noBtn.addEventListener('mouseover', () => teleport(noBtn));
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); teleport(noBtn); });
 
-        // Le "Oui" bouge aussi mais 70% du temps
         yesBtn.addEventListener('mouseover', () => {
-            if (Math.random() < 0.7) {
+            if (Math.random() < 0.75) { // 75% de chances de bouger
                 teleport(yesBtn);
             }
         });
 
         function celebrate() {
             const card = document.getElementById('main-card');
-            // On nettoie tout pour afficher le message de succès
             card.innerHTML = `
                 <h1 style="font-size: 2rem;">Yééé ! 🥰</h1>
-                <p style="color: #ff4d6d; font-weight: bold;">Tu as été plus rapide que les boutons ! ❤️</p>
-                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW1uNHFqZ3J3ZzR3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3JpZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KztT2c4u8mYYUiMKdJ/giphy.gif">
+                <p style="color: #ff4d6d; font-weight: bold;">Tu as enfin réussi ! ❤️</p>
+                <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW1uNHFqZ3J3ZzR3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3JpZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/KztT2c4u8mYYUiMKdJ/giphy.gif" class="victory-gif" alt="Célébration">
             `;
             setInterval(createHeart, 200);
         }
