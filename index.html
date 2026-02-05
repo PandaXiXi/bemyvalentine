@@ -60,12 +60,25 @@
             100% { transform: translateY(-10vh); opacity: 0; }
         }
 
-        /* Style pour l'image de victoire */
+        /* L'image finale */
         .victory-gif {
-            width: 100%;
+            width: 200px;
             height: auto;
             border-radius: 15px;
-            margin-top: 15px;
+            margin: 15px auto;
+            display: block;
+        }
+
+        .big-heart {
+            font-size: 80px;
+            animation: pulse 1s infinite;
+            display: block;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
     </style>
 </head>
@@ -84,12 +97,12 @@
         const yesBtn = document.getElementById('yes-btn');
 
         function teleport(btn) {
-            // Zone de sécurité : reste entre 10% et 70% de l'écran
-            const safeWidth = window.innerWidth * 0.6;
-            const safeHeight = window.innerHeight * 0.6;
+            // Zone de sécurité très stricte (au centre de l'écran)
+            const safeWidth = window.innerWidth * 0.5;
+            const safeHeight = window.innerHeight * 0.5;
             
-            const randomX = Math.random() * safeWidth + (window.innerWidth * 0.2);
-            const randomY = Math.random() * safeHeight + (window.innerHeight * 0.2);
+            const randomX = Math.random() * safeWidth + (window.innerWidth * 0.25);
+            const randomY = Math.random() * safeHeight + (window.innerHeight * 0.25);
 
             btn.style.position = 'fixed';
             btn.style.left = randomX + 'px';
@@ -101,7 +114,7 @@
         noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); teleport(noBtn); });
 
         yesBtn.addEventListener('mouseover', () => {
-            if (Math.random() < 0.75) { // 75% de chances de bouger
+            if (Math.random() < 0.8) { // 80% de chances de bouger
                 teleport(yesBtn);
             }
         });
@@ -110,8 +123,11 @@
             const card = document.getElementById('main-card');
             card.innerHTML = `
                 <h1 style="font-size: 2rem;">Yééé ! 🥰</h1>
-                <p style="color: #ff4d6d; font-weight: bold;">Tu as enfin réussi ! ❤️</p>
-                <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHpndW1uNHFqZ3J3ZzR3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3Z3R3JpZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/KztT2c4u8mYYUiMKdJ/giphy.gif" class="victory-gif" alt="Célébration">
+                <p style="color: #ff4d6d; font-weight: bold;">C'est parti pour la Saint-Valentin ! ❤️</p>
+                <div class="big-heart">💖</div>
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Zic3B6YmZidW9xcXp3eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l41lH4ADRtAYnGsLe/giphy.gif" 
+                     class="victory-gif" 
+                     onerror="this.style.display='none'">
             `;
             setInterval(createHeart, 200);
         }
